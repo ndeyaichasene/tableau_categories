@@ -1,5 +1,5 @@
 <?php
-
+//1-
 $categories =[
             0=> [
                 'nom'=>'alimentaire',
@@ -26,3 +26,11 @@ $categories =[
             ]
 
 ];
+
+//2-
+foreach ($categories as $index => $categorie) {
+    if(empty($categorie['produits'])){
+        echo "la categorie ".$categorie['nom']." n'a pas de produit\n";
+    }
+    
+}
