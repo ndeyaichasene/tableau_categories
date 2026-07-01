@@ -70,3 +70,76 @@ $categories[] = [
 ];
 
 echo "Catégorie enregistrée avec succès.\n";
+
+//4-
+//a
+$codeCategorie = readline("Entrer le code de la catégorie a recherche: ");
+
+$categorieTrouvee = -1;
+
+foreach ($categories as $index => $categorie) {
+    if ($categorie['code'] == $codeCategorie) {
+        $categorieTrouvee = $index;
+        break;
+    }
+}
+
+if ($categorieTrouvee == -1) {
+    echo "Catégorie introuvable.\n";
+    exit;
+}
+//b
+do {
+    $referenceExiste = false;
+    $reference = readline("Entrer la référence : ");
+
+    if (empty($reference)) {
+        echo "Champ obligatoire.\n";
+    } else {
+        foreach ($categories as $categorie) {
+            foreach ($categorie['produits'] as $produit) {
+                if ($produit['reference'] == $reference) {
+                    $referenceExiste = true;
+                    echo "Cette référence existe déjà.\n";
+                }
+            }
+        }
+    }
+
+} while (empty($reference) || $referenceExiste);
+//c
+do {
+    $nom = readline("Entrer le nom du produit : ");
+
+    if (empty($nom)) {
+        echo "Champ obligatoire.\n";
+    }
+
+} while (empty($nom));
+//d
+do {
+    $prix = (int) readline("Entrer le prix : ");
+
+    if ($prix <= 0) {
+        echo "Le prix doit être positif.\n";
+    }
+
+} while ($prix <= 0);
+//e
+do {
+    $quantite = (int) readline("Entrer la quantité : ");
+
+    if ($quantite <= 0) {
+        echo "La quantité doit être positive.\n";
+    }
+
+} while ($quantite <= 0);
+//f
+$categories[$categorieTrouvee]['produits'][] = [
+    'nom' => $nom,
+    'reference' => $reference,
+    'prix' => $prix,
+    'quantite' => $quantite
+];
+
+echo "Produit ajouté avec succès.\n";
