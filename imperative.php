@@ -101,4 +101,91 @@ function ajouterCategorie(array &$categories): void
 }
  
 
+//4-
+
+function trouverIndexCategorie(array $categories, string $code): int
+{
+    foreach ($categories as $index => $categorie) {
+        if ($categorie['code'] == $code) {
+            return $index;
+        }
+    }
+    return -1;
+}
+
+function referenceExiste(array $categories, string $reference, array $produitsSupplementaires = []): bool
+{
+    foreach ($categories as $categorie) {
+        foreach ($categorie['produits'] as $produit) {
+            if ($produit['reference'] == $reference) {
+                return true;
+            }
+        }
+    }
+ 
+    foreach ($produitsSupplementaires as $produit) {
+        if ($produit['reference'] == $reference) {
+            return true;
+        }
+    }
+ 
+    return false;
+}
+
+function saisirReference(array $categories, array $produitsSupplementaires = []): string
+{
+    do {
+        $reference = readline("Entrer la référence : ");
+        if (empty($reference)) {
+            echo "Champ obligatoire.\n";
+        } elseif (referenceExiste($categories, $reference, $produitsSupplementaires)) {
+            echo "Cette référence existe déjà.\n";
+        }
+    } while (empty($reference) || referenceExiste($categories, $reference, $produitsSupplementaires));
+ 
+    return $reference;
+}
+
+
+function saisirEntierPositif(string $message): int
+{
+    do {
+        $valeur = (int) readline($message);
+        if ($valeur <= 0) {
+            echo "La valeur doit être positive.\n";
+        }
+    } while ($valeur <= 0);
+ 
+    return $valeur;
+}
+
+function creerProduit(string $nom, string $reference, int $prix, int $quantite): array
+{
+    return [
+        'nom' => $nom,
+        'reference' => $reference,
+        'prix' => $prix,
+        'quantite' => $quantite,
+    ];
+}
+
+function ajouterProduitDansCategorie(array &$categories): void
+{
+    $codeCategorie = readline("Entrer le code de la catégorie a recherche: ");
+    $indexCategorie = trouverIndexCategorie($categories, $codeCategorie);
+ 
+    if ($indexCategorie == -1) {
+        echo "Catégorie introuvable.\n";
+        return;
+    }
+ 
+    $reference = saisirReference($categories);
+    $nom = saisirChampObligatoire("Entrer le nom du produit : ");
+    $prix = saisirEntierPositif("Entrer le prix : ");
+    $quantite = saisirEntierPositif("Entrer la quantité : ");
+ 
+    $categories[$indexCategorie]['produits'][] = creerProduit($nom, $reference, $prix, $quantite);
+ 
+    echo "Produit ajouté avec succès.\n";
+}
 
