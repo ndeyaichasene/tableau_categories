@@ -30,11 +30,9 @@ function initialiserCategories() {
     ];
 }
 
-$categories = initialiserCategories();
-print_r($categories);
 
 //2-
- function afficheCategorieSansProduit(array $categories): void{
+ function afficherCategorieSansProduit(array $categories): void{
     foreach ($categories as  $categorie ) {
         if (empty($categorie["produits"])) {
             echo $categorie["nom"]."\n";
@@ -113,7 +111,7 @@ function trouverIndexCategorie(array $categories, string $code): int
     return -1;
 }
 
-function referenceExiste(array $categories, string $reference, array $produitsSupplementaires = []): bool
+function referenceExiste(array $categories, string $reference, array $produitSupp = []): bool
 {
     foreach ($categories as $categorie) {
         foreach ($categorie['produits'] as $produit) {
@@ -123,7 +121,7 @@ function referenceExiste(array $categories, string $reference, array $produitsSu
         }
     }
  
-    foreach ($produitsSupplementaires as $produit) {
+    foreach ($produitSupp as $produit) {
         if ($produit['reference'] == $reference) {
             return true;
         }
@@ -132,16 +130,16 @@ function referenceExiste(array $categories, string $reference, array $produitsSu
     return false;
 }
 
-function saisirReference(array $categories, array $produitsSupplementaires = []): string
+function saisirReference(array $categories, array $produitSupp = []): string
 {
     do {
         $reference = readline("Entrer la référence : ");
         if (empty($reference)) {
             echo "Champ obligatoire.\n";
-        } elseif (referenceExiste($categories, $reference, $produitsSupplementaires)) {
+        } elseif (referenceExiste($categories, $reference, $produitSupp)) {
             echo "Cette référence existe déjà.\n";
         }
-    } while (empty($reference) || referenceExiste($categories, $reference, $produitsSupplementaires));
+    } while (empty($reference) || referenceExiste($categories, $reference, $produitSupp));
  
     return $reference;
 }
@@ -189,3 +187,37 @@ function ajouterProduitDansCategorie(array &$categories): void
     echo "Produit ajouté avec succès.\n";
 }
 
+//5-
+
+function ajouterCategorieAvecProduits(array &$categories): void
+{
+    $code = saisirCodeCategorie($categories);
+    $nom = saisirChampObligatoire("Entrer le nom : ");
+ 
+    $nouvelleCategorie = creerCategorie($nom, $code);
+ 
+    do {
+        
+        $reference = saisirReference($categories, $nouvelleCategorie['produits']);
+        $nomProduit = saisirChampObligatoire("Entrer le nom du produit : ");
+        $prix = saisirEntierPositif("Entrer le prix : ");
+        $quantite = saisirEntierPositif("Entrer la quantité : ");
+ 
+        $nouvelleCategorie['produits'][] = creerProduit($nomProduit, $reference, $prix, $quantite);
+ 
+        $reponse = strtolower(readline("Voulez-vous ajouter un autre produit ? (oui/non) : "));
+    } while ($reponse == "oui");
+ 
+    $categories[] = $nouvelleCategorie;
+ 
+    echo "Catégorie enregistrée avec succès.\n";
+}
+
+
+
+$categories = initialiserCategories();
+ 
+afficherCategorieSansProduit($categories);
+ajouterCategorie($categories);
+ajouterProduitDansCategorie($categories);
+ajouterCategorieAvecProduits($categories);
