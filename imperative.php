@@ -143,3 +143,110 @@ $categories[$categorieTrouvee]['produits'][] = [
 ];
 
 echo "Produit ajouté avec succès.\n";
+
+//-5
+do {
+    $codeExiste = false;
+    $code = readline("entrer le code ");
+    if(empty($code)){
+        echo "champs obligatoire \n";
+    }else{
+        foreach ($categories as $key => $categorie) {
+           if($categorie['code']==$code){
+                $codeExiste = true;
+               echo "le code exist ";
+           }
+        }
+    }
+
+} while (empty($code) || $codeExiste);
+
+do {
+    $nom = readline("Entrer le nom : ");
+
+    if (empty($nom)) {
+        echo "Champ obligatoire.\n";
+    }
+
+} while (empty($nom));
+
+$nouvelleCategorie= [
+    'nom' => $nom,
+    'code' => $code,
+    'produits' => []
+];
+
+do {
+
+   
+    do {
+        $referenceExiste = false;
+        $reference = readline("Entrer la référence : ");
+
+        if (empty($reference)) {
+            echo "Champ obligatoire.\n";
+        } else {
+            foreach ($categories as $categorie) {
+                foreach ($categorie['produits'] as $produit) {
+                    if ($produit['reference'] == $reference) {
+                        $referenceExiste = true;
+                        echo "La référence existe déjà.\n";
+                    }
+                }
+            }
+
+            foreach ($nouvelleCategorie['produits'] as $produit) {
+                if ($produit['reference'] == $reference) {
+                    $referenceExiste = true;
+                    echo "La référence existe déjà.\n";
+                }
+            }
+        }
+
+    } while (empty($reference) || $referenceExiste);
+
+    // Nom
+    do {
+        $nomProduit = readline("Entrer le nom du produit : ");
+
+        if (empty($nomProduit)) {
+            echo "Champ obligatoire.\n";
+        }
+
+    } while (empty($nomProduit));
+
+    // Prix
+    do {
+        $prix = (int) readline("Entrer le prix : ");
+
+        if ($prix <= 0) {
+            echo "Le prix doit être positif.\n";
+        }
+
+    } while ($prix <= 0);
+
+    // Quantité
+    do {
+        $quantite = (int) readline("Entrer la quantité : ");
+
+        if ($quantite <= 0) {
+            echo "La quantité doit être positive.\n";
+        }
+
+    } while ($quantite <= 0);
+
+    // Ajout du produit
+    $nouvelleCategorie['produits'][] = [
+        'nom' => $nomProduit,
+        'reference' => $reference,
+        'prix' => $prix,
+        'quantite' => $quantite
+    ];
+
+    $reponse = strtolower(readline("Voulez-vous ajouter un autre produit ? (oui/non) : "));
+
+} while ($reponse == "oui");
+
+$categories[] = $nouvelleCategorie;
+
+echo "Catégorie enregistrée avec succès.\n";
