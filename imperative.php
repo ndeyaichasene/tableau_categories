@@ -41,4 +41,64 @@ print_r($categories);
         }
     }
  }
- afficheCategorieSansProduit($categories);
+
+ //3-
+
+function codeExiste(array $categories, string $code): bool{
+    foreach ($categories as $categorie) {
+        if ($categorie['code'] == $code) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function saisirChampObligatoire(string $message): string
+{
+    do {
+        $valeur = readline($message);
+        if (empty($valeur)) {
+            echo "Champ obligatoire.\n";
+        }
+    } while (empty($valeur));
+ 
+    return $valeur;
+}
+
+function saisirCodeCategorie(array $categories): string
+{
+    do {
+        $code = readline("entrer le code : ");
+        if (empty($code)) {
+            echo "champs obligatoire \n";
+        } elseif (codeExiste($categories, $code)) {
+            echo "le code existe deja \n";
+        }
+    } while (empty($code) || codeExiste($categories, $code));
+ 
+    return $code;
+}
+
+function creerCategorie(string $nom, string $code): array
+{
+    return [
+        'nom' => $nom,
+        'code' => $code,
+        'produits' => [],
+    ];
+}
+
+
+function ajouterCategorie(array &$categories): void
+{
+    $code = saisirCodeCategorie($categories);
+    $nom = saisirChampObligatoire("Entrer le nom : ");
+ 
+    $categories[] = creerCategorie($nom, $code);
+ 
+    echo "Catégorie enregistrée avec succès.\n";
+}
+ 
+
+
